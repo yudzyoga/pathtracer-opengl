@@ -110,20 +110,27 @@ static unsigned int CreateShader(const std::string &vertexShader,
 }
 
 int main() {
+	GLFWwindow *window;
+
+	// initialize the library
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW\n";
 		return -1;
 	}
 
-	GLFWwindow *window =
-		glfwCreateWindow(500, 500, "Hello GLFW", nullptr, nullptr);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(500, 500, "OpenGL is fun!", nullptr, nullptr);
 	if (!window) {
 		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
 		return -1;
 	}
 
-	GLCall(glfwMakeContextCurrent(window));
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 	// If using GLEW:
 	if (glewInit() != GLEW_OK) {
@@ -133,11 +140,29 @@ int main() {
 	float positions[] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f};
 	unsigned int indices[] = {0, 1, 2, 2, 3, 0};
 
+	unsigned int vao; // vertex arr obj, must use for CORE
+	GLCall(glGenVertexArrays(1, &vao));
+	GLCall(glBindVertexArray(vao));
+
 	unsigned int buffer;
 	GLCall(glGenBuffers(1, &buffer));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions,
 						GL_STATIC_DRAW));
+
+	// when we BindVertexArray and BindBuffer, nothing actually links the two.
+	// but when we specify glVertexAttribPointer, we're saying that the index 0
+	// will be bound to the currently index 0, so the vertexAttribPointer links
+	// both the `buffer` and the `vao`.
+	// 1. (single VAO) if we use CORE, then we need to use VAO (default).
+	// what you could do, create one VAO and leave it bounds for the duration of
+	// entire program. always have ONE VAO bound. then, bind vertex buffer, and
+	// specify vertex layout. (past: faster)
+	// 2. (multiple VAO) for every geometry, build a VAO. specify
+	// glVertexAttribPointer as many times as you need, and bind vertex buffer
+	// before do all that, and binds different vao every time you want to draw
+	// your geometry, bind index, etc.
+	// best method: try both and see the performance compares.
 
 	// definees that the position is consists of 2 elements only
 	GLCall(glEnableVertexAttribArray(0));
@@ -152,21 +177,50 @@ int main() {
 
 	const std::string filepath = "../res/shaders/Basic.shader";
 	ShaderProgramSource source = ParseShader(filepath);
-	std::cout << "VERTEX" << std::endl;
-	std::cout << source.VertexSource << std::endl;
-	std::cout << "FRAGMENT" << std::endl;
-	std::cout << source.FragmentSource << std::endl;
-
 	unsigned int shader =
 		CreateShader(source.VertexSource, source.FragmentSource);
 	GLCall(glUseProgram(shader));
 
+	GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+	ASSERT(location != -1);
+	GLCall(glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f));
+
+	// unbound everything
+	GLCall(glUseProgram(0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+	float r = 0.0f;
+	float increment = 0.01f;
+
 	while (!glfwWindowShouldClose(window)) {
 		// draw here
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-		// glDrawArrays(GL_TRIANGLES, 0, 6);
+		// * set program and set uniform
+		GLCall(glUseProgram(shader));
+		GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
+
+		// * bound the buffer and setup the layout. simulate specific binding to
+		// specific specification.
+		// GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+		// GLCall(glEnableVertexAttribArray(0));
+		// GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
+		// 							 sizeof(float) * 2, 0));
+
+		GLCall(glBindVertexArray(vao));
+
+		// * bound the index element
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+
+		// * at last, call the draw elements
 		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+		if (r > 1.0f)
+			increment = -0.01f;
+		else if (r < 0.0f)
+			increment = 0.01f;
+		r += increment;
+
 		GLCall(glfwSwapBuffers(window));
 		GLCall(glfwPollEvents());
 	}
