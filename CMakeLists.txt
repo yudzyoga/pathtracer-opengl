@@ -21,6 +21,16 @@ file(GLOB SRC_FILES
     "*.h"
 )
 
+add_library(stb_image 
+    STATIC
+    ext/stb_image/stb_image.cpp
+)
+
+target_include_directories(stb_image
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/ext/stb_image
+)
+
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Link GLFW to your executable
@@ -28,6 +38,7 @@ target_link_libraries(${PROJECT_NAME}
     glfw
     GLEW::GLEW
     OpenGL::GL
+    stb_image
 )
 
 # # For macOS, link Cocoa and OpenGL frameworks automatically

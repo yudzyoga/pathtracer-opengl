@@ -1,4 +1,7 @@
 #pragma once
+#include "index_buffer.h"
+#include "shader.h"
+#include "vertex_array.h"
 #include <GL/glew.h>
 
 #ifdef _MSC_VER
@@ -19,3 +22,11 @@
 
 void GLClearError();
 bool GLLogCall(const char *function, const char *file, int line);
+
+class Renderer {
+  public:
+	void Draw(const VertexArray &va, const IndexBuffer &ib,
+			  const Shader &shader) const;
+
+	void Clear() const;
+};
