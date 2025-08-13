@@ -8,7 +8,9 @@
 
 #include "index_buffer.h"
 #include "renderer.h"
+#include "vertex_array.h"
 #include "vertex_buffer.h"
+#include "vertex_buffer_layout.h"
 
 struct ShaderProgramSource {
 	std::string VertexSource;
@@ -116,23 +118,25 @@ int main() {
 							 0.5f,	0.5f,  -0.5f, 0.5f};
 		unsigned int indices[] = {0, 1, 2, 2, 3, 0};
 
-		unsigned int vao; // vertex arr obj, must use for CORE
-		GLCall(glGenVertexArrays(1, &vao));
-		GLCall(glBindVertexArray(vao));
+		// unsigned int vao; // vertex arr obj, must use for CORE
+		// GLCall(glGenVertexArrays(1, &vao));
+		// GLCall(glBindVertexArray(vao));
 
-		// unsigned int buffer;
-		// GLCall(glGenBuffers(1, &buffer));
-		// GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-		// GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float),
-		// positions, 					GL_STATIC_DRAW));
-		// * implement VertexBuffer instead of manual mentioning just like
-		// before
+		// * implement VertexBuffer instead of manual mentioning
+		VertexArray va;
 		VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		va.AddBuffer(vb, layout);
 
-		// definees that the position is consists of 2 elements only
-		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
-									 sizeof(float) * 2, 0));
+		// BufferLayout layout;
+		// layout.Push<float>(3);
+		// va.AddLayout(layout);
+
+		// defines that the position is consists of 2 elements only
+		// GLCall(glEnableVertexAttribArray(0));
+		// GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
+		// 							 sizeof(float) * 2, 0));
 		// when we BindVertexArray and BindBuffer, nothing actually links the
 		// two. but when we specify glVertexAttribPointer, we're saying that the
 		// index 0 will be bound to the currently index 0, so the
@@ -147,11 +151,6 @@ int main() {
 		// want to draw your geometry, bind index, etc. best method: try both
 		// and see the performance compares.
 
-		// unsigned int ibo;
-		// GLCall(glGenBuffers(1, &ibo));
-		// GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-		// GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned
-		// int), 					indices, GL_STATIC_DRAW));
 		// * implement IndexBuffer instead of manual mentioning just like before
 		IndexBuffer ib(indices, 6);
 
@@ -181,17 +180,8 @@ int main() {
 			GLCall(glUseProgram(shader));
 			GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
-			// * bound the buffer and setup the layout. simulate specific
-			// binding to specific specification.
-			// GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-			// GLCall(glEnableVertexAttribArray(0));
-			// GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
-			// 							 sizeof(float) * 2, 0));
-
-			GLCall(glBindVertexArray(vao));
-
-			// * bound the index element
-			// GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+			// * bind both vertex array and index buf
+			va.Bind();
 			ib.Bind();
 
 			// * at last, call the draw elements
