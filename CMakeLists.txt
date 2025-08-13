@@ -12,9 +12,16 @@ add_subdirectory(ext/glfw)
 
 
 # Create executable from your source files
-add_executable(${PROJECT_NAME}
-    main.cpp
+# add_executable(${PROJECT_NAME}
+#     main.cpp
+# )
+
+file(GLOB SRC_FILES
+    "*.cpp"
+    "*.h"
 )
+
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Link GLFW to your executable
 target_link_libraries(${PROJECT_NAME}
