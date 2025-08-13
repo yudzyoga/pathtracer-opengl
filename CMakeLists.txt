@@ -9,6 +9,7 @@ find_package(GLEW REQUIRED)
 
 # Add GLFW from ext/
 add_subdirectory(ext/glfw)
+add_subdirectory(ext/glm)
 
 
 # Create executable from your source files
@@ -31,6 +32,11 @@ target_include_directories(stb_image
     ${CMAKE_CURRENT_SOURCE_DIR}/ext/stb_image
 )
 
+# target_include_directories(${PROJECT_NAME}
+#     PRIVATE
+#         ${CMAKE_CURRENT_SOURCE_DIR}/ext/glm
+# )
+
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Link GLFW to your executable
@@ -39,6 +45,7 @@ target_link_libraries(${PROJECT_NAME}
     GLEW::GLEW
     OpenGL::GL
     stb_image
+    glm::glm
 )
 
 # # For macOS, link Cocoa and OpenGL frameworks automatically
