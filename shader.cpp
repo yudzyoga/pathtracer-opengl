@@ -1,6 +1,7 @@
 #include "shader.h"
 
 #include "renderer.h"
+#include <GL/gl.h>
 #include <cstdio>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
@@ -106,12 +107,11 @@ void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix) {
 		&matrix[0][0])); // get 1st elem, other gets sequentially
 }
 
-int Shader::GetUniformLocation(const std::string &name) {
-	GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-	if (location == -1)
-		std::cout << "Warning: uniform '" << name << "' doesn't exist!"
-				  << std::endl;
-	else
-		m_UniformLocationCache[name] = location;
+GLint Shader::GetUniformLocation(const std::string &name) const {
+	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+		return m_UniformLocationCache[name];
+
+	GLCall(GLint location = glGetUniformLocation(m_RendererID, name.c_str()));
+	m_UniformLocationCache[name] = location;
 	return location;
 }

@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "shader.h"
 #include "tests/test.h"
+#include "tests/test_texture_2d.h"
 #include "texture.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
@@ -24,7 +25,7 @@
 
 #include "imgui_impl_opengl3.h"
 
-#include "tests/testClearColor.h"
+#include "tests/test_clear_color.h"
 
 int main() {
 	GLFWwindow *window;
@@ -47,7 +48,7 @@ int main() {
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 	// If using GLEW:
 	if (glewInit() != GLEW_OK) {
@@ -104,6 +105,7 @@ int main() {
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+		testMenu->RegisterTest<test::TestTexture2D>("Texture 2D");
 
 		while (!glfwWindowShouldClose(window)) {
 			// draw here
