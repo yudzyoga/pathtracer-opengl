@@ -9,9 +9,9 @@ class TestClearColor : public Test {
 	TestClearColor();
 	~TestClearColor();
 
-	void OnUpdate(float deltaTime);
-	void OnRender();
-	void OnImGuiRender();
+	void OnUpdate(float deltaTime) override;
+	void OnRender() override;
+	void OnImGuiRender() override;
 
   private:
 	float m_ClearColor[4];

@@ -20,6 +20,8 @@ add_subdirectory(ext/glm)
 file(GLOB SRC_FILES
     "*.cpp"
     "*.h"
+    "tests/*.cpp"
+    "tests/*.h"
 )
 
 add_library(stb_image 

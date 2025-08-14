@@ -23,6 +23,8 @@
 
 #include "imgui_impl_opengl3.h"
 
+#include "tests/testClearColor.h"
+
 int main() {
 	GLFWwindow *window;
 
@@ -52,45 +54,9 @@ int main() {
 	}
 
 	{
-		float positions[] = {-100.f, -100.f, 0.f,	0.f,   100.f, -100.f,
-							 1.f,	 0.f,	 100.f, 100.f, 1.f,	  1.f,
-							 -100.f, 100.f,	 0.f,	1.f};
-		unsigned int indices[] = {0, 1, 2, 2, 3, 0};
 
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-		// * implement VertexBuffer instead of manual mentioning
-		VertexArray va;
-		VertexBuffer vb(positions,
-						4 * 4 * sizeof(float)); // num pt, num data per pt
-		VertexBufferLayout layout;
-		layout.Push<float>(2); // position
-		layout.Push<float>(2); // texcoords
-		va.AddBuffer(vb, layout);
-
-		// * implement IndexBuffer instead of manual mentioning just like before
-		IndexBuffer ib(indices, 6);
-
-		glm::mat4 proj = glm::ortho(0.f, 500.f, 0.f, 500.f, -1.f, 1.f);
-		glm::mat4 view =
-			glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
-		Shader shader("../res/shaders/Basic.shader");
-		shader.Bind();
-		shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-
-		Texture texture("../files/test.jpg");
-		texture.Bind(0);
-		shader.SetUniform1i("u_Texture", 0);
-
-		va.Unbind();
-		shader.Unbind();
-		vb.Unbind();
-		ib.Unbind();
-
-		float r = 0.0f;
-		float increment = 0.01f;
 
 		Renderer renderer;
 
@@ -132,55 +98,20 @@ int main() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		glm::vec3 translationA(100.0f, 250.0f, 0.0f);
-		glm::vec3 translationB(400.0f, 250.0f, 0.0f);
+		test::TestClearColor test;
+
 		while (!glfwWindowShouldClose(window)) {
 			// draw here
 			renderer.Clear();
+
+			test.OnUpdate(0.0f);
+			test.OnRender();
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			// * set program and set uniform
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", mvp);
-				renderer.Draw(va, ib, shader);
-			}
-
-			// * set program and set uniform
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", mvp);
-				renderer.Draw(va, ib, shader);
-			}
-
-			// * bind both vertex array and index buf
-			va.Bind();
-			ib.Bind();
-
-			// * at last, call the draw elements
-			if (r > 1.0f)
-				increment = -0.01f;
-			else if (r < 0.0f)
-				increment = 0.01f;
-			r += increment;
-
-			{
-				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f,
-									500.0f);
-				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f,
-									500.0f);
-
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-							1000.0f / io.Framerate, io.Framerate);
-			}
-
+			test.OnImGuiRender();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
