@@ -32,10 +32,29 @@ target_include_directories(stb_image
     ${CMAKE_CURRENT_SOURCE_DIR}/ext/stb_image
 )
 
-# target_include_directories(${PROJECT_NAME}
-#     PRIVATE
-#         ${CMAKE_CURRENT_SOURCE_DIR}/ext/glm
-# )
+
+
+# ImGui source files
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
+
+set(IMGUI_SRC
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+add_library(imgui STATIC ${IMGUI_SRC})
+
+target_include_directories(imgui PUBLIC
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
+)
+
+
+
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
@@ -46,6 +65,12 @@ target_link_libraries(${PROJECT_NAME}
     OpenGL::GL
     stb_image
     glm::glm
+    imgui
+)
+
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}# so it finds renderer.h in the root
 )
 
 # # For macOS, link Cocoa and OpenGL frameworks automatically
