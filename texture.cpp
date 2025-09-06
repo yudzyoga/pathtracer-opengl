@@ -30,17 +30,14 @@ Texture::Texture(const std::string &path)
 Texture::Texture(unsigned int width, unsigned int height)
 	: m_RendererID(0), m_Width(width), m_Height(height), m_LocalBuffer(nullptr),
 	  m_BPP(0) {
-	GLCall(glGenTextures(1, &m_RendererID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
-						GL_FLOAT, NULL));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-
-	// Bind as image for read/write
-	GLCall(glBindImageTexture(0, m_RendererID, 0, GL_FALSE, 0, GL_READ_WRITE,
-							  GL_RGBA32F));
+	glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+	glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTextureStorage2D(m_RendererID, 1, GL_RGBA32F, m_Width, m_Height);
+	glBindImageTexture(0, m_RendererID, 0, GL_FALSE, 0, GL_WRITE_ONLY,
+					   GL_RGBA32F);
 }
 
 Texture::~Texture() { GLCall(glDeleteTextures(1, &m_RendererID)); }

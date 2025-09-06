@@ -42,6 +42,11 @@ TestPathTracer::TestPathTracer() {
 	glTextureStorage2D(screenTex, 1, GL_RGBA32F, SCREEN_WIDTH, SCREEN_HEIGHT);
 	glBindImageTexture(0, screenTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
+	// * Texture
+	// m_Texture = std::make_unique<Texture>(SCREEN_WIDTH, SCREEN_HEIGHT);
+	// m_Texture->Bind(0);
+	// m_ShaderVertFrag->SetUniform1i("u_Texture", 0);
+
 	m_VAO->Unbind();
 	m_ShaderCompute->Unbind();
 	m_ShaderVertFrag->Unbind();
@@ -54,8 +59,10 @@ TestPathTracer::~TestPathTracer() {}
 void TestPathTracer::OnUpdate(float deltaTime) {}
 
 void TestPathTracer::OnRender() {
-	GLCall(glClearColor(0.f, 1.f, 0.f, 1.0f));
+	GLCall(glClearColor(0.f, 0.f, 0.f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+	Renderer renderer;
 
 	// * compute shader
 	m_ShaderCompute->Bind();
@@ -65,11 +72,11 @@ void TestPathTracer::OnRender() {
 	// * vertex and fragment shader
 	m_ShaderVertFrag->Bind();
 	glBindTextureUnit(0, screenTex);
+	// m_Texture->Bind(0);
+
 	m_ShaderVertFrag->SetUniform1i("u_Texture", 0);
 
-	Renderer renderer;
 	renderer.Draw(*m_VAO, *m_IndexBuffer, *m_ShaderVertFrag);
-	renderer.Draw(*m_VAO, *m_IndexBuffer, *m_ShaderCompute);
 }
 
 void TestPathTracer::OnImGuiRender() {}
