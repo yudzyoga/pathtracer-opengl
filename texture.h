@@ -10,6 +10,7 @@ class Texture {
 	int m_Width, m_Height, m_BPP;
 
   public:
+	Texture(unsigned int width, unsigned int height);
 	Texture(const std::string &path);
 	~Texture();
 

@@ -40,7 +40,7 @@ TestTexture2D::TestTexture2D()
 	m_Shader->SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
 	// * Texture
-	m_Texture = std::make_unique<Texture>("../files/test.jpg");
+	m_Texture = std::make_unique<Texture>("../files/test2.jpg");
 	m_Texture->Bind(0);
 	m_Shader->SetUniform1i("u_Texture", 0);
 

@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "shader.h"
 #include "tests/test.h"
+#include "tests/test_pathtracer.h"
 #include "tests/test_texture_2d.h"
 #include "texture.h"
 #include "vertex_array.h"
@@ -106,6 +107,7 @@ int main() {
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture2D>("Texture 2D");
+		testMenu->RegisterTest<test::TestPathTracer>("Path Tracer");
 
 		while (!glfwWindowShouldClose(window)) {
 			// draw here
@@ -128,7 +130,6 @@ int main() {
 				ImGui::End();
 			}
 
-			// test.OnImGuiRender();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
