@@ -38,14 +38,25 @@ Texture::Texture(unsigned int width, unsigned int height)
 	glTextureStorage2D(m_RendererID, 1, GL_RGBA32F, m_Width, m_Height);
 	glBindImageTexture(0, m_RendererID, 0, GL_FALSE, 0, GL_WRITE_ONLY,
 					   GL_RGBA32F);
+	m_type = true;
 }
 
 Texture::~Texture() { GLCall(glDeleteTextures(1, &m_RendererID)); }
 
 void Texture::Bind(unsigned int slot) const {
+	if (m_type) {
+		glBindTextureUnit(slot, m_RendererID);
+		return;
+	}
 	// state machine again. add because they are consecutive
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
-void Texture::Unbind() const { GLCall(glBindTexture(GL_TEXTURE_2D, 0)); }
+void Texture::Unbind() const {
+	if (m_type) {
+		glBindTextureUnit(0, 0);
+		return;
+	}
+	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+}

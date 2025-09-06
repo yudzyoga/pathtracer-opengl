@@ -8,6 +8,7 @@ class Texture {
 	std::string m_FilePath;
 	unsigned char *m_LocalBuffer;
 	int m_Width, m_Height, m_BPP;
+	bool m_type = false;
 
   public:
 	Texture(unsigned int width, unsigned int height);

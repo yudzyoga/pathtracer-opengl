@@ -34,18 +34,8 @@ TestPathTracer::TestPathTracer() {
 	m_ShaderCompute =
 		std::make_unique<Shader>("../res/shaders/pt_compute.shader");
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &screenTex);
-	glTextureParameteri(screenTex, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTextureParameteri(screenTex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTextureParameteri(screenTex, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(screenTex, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTextureStorage2D(screenTex, 1, GL_RGBA32F, SCREEN_WIDTH, SCREEN_HEIGHT);
-	glBindImageTexture(0, screenTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-
 	// * Texture
-	// m_Texture = std::make_unique<Texture>(SCREEN_WIDTH, SCREEN_HEIGHT);
-	// m_Texture->Bind(0);
-	// m_ShaderVertFrag->SetUniform1i("u_Texture", 0);
+	m_Texture = std::make_unique<Texture>(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	m_VAO->Unbind();
 	m_ShaderCompute->Unbind();
@@ -66,13 +56,13 @@ void TestPathTracer::OnRender() {
 
 	// * compute shader
 	m_ShaderCompute->Bind();
-	glDispatchCompute(ceil(SCREEN_WIDTH / 8), ceil(SCREEN_HEIGHT / 4), 1);
+	glDispatchCompute(ceil(SCREEN_WIDTH / 8), ceil(SCREEN_HEIGHT / 8), 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 	// * vertex and fragment shader
 	m_ShaderVertFrag->Bind();
-	glBindTextureUnit(0, screenTex);
-	// m_Texture->Bind(0);
+	// glBindTextureUnit(0, screenTex);
+	m_Texture->Bind(0);
 
 	m_ShaderVertFrag->SetUniform1i("u_Texture", 0);
 

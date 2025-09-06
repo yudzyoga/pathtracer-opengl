@@ -22,7 +22,7 @@ class TestPathTracer : public Test {
 	std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
 	std::unique_ptr<Shader> m_ShaderCompute, m_ShaderVertFrag;
-	// std::unique_ptr<Texture> m_Texture;
+	std::unique_ptr<Texture> m_Texture;
 
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;
 	glm::mat4 m_Proj, m_View;
@@ -30,7 +30,7 @@ class TestPathTracer : public Test {
 	unsigned int frameCount = 1024;
 	unsigned int SCREEN_WIDTH = 512;
 	unsigned int SCREEN_HEIGHT = 512;
-	GLuint screenTex;
+	// GLuint screenTex;
 	// GLuint screenVertexShader;
 	// GLuint screenShaderProgram;
 	// GLuint screenFragmentShader;
