@@ -31,11 +31,11 @@ class TestPathTracer : public Test {
 	unsigned int SCREEN_WIDTH = 512;
 	unsigned int SCREEN_HEIGHT = 512;
 	GLuint screenTex;
-	GLuint screenVertexShader;
-	GLuint screenShaderProgram;
-	GLuint screenFragmentShader;
-	GLuint computeShader;
-	GLuint computeProgram;
+	// GLuint screenVertexShader;
+	// GLuint screenShaderProgram;
+	// GLuint screenFragmentShader;
+	// GLuint computeShader;
+	// GLuint computeProgram;
 	GLuint VAO, VBO, EBO;
 };
 
