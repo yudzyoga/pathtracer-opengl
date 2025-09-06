@@ -36,7 +36,7 @@ class TestPathTracer : public Test {
 	// GLuint screenFragmentShader;
 	// GLuint computeShader;
 	// GLuint computeProgram;
-	GLuint VAO, VBO, EBO;
+	// GLuint VAO, VBO, EBO;
 };
 
 } // namespace test
