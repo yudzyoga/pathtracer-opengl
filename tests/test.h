@@ -13,7 +13,7 @@ class Test {
 	Test() {}
 	virtual ~Test() {}
 
-	virtual void OnUpdate(float deltaTime) {}
+	virtual void OnUpdate(float deltaTime, unsigned int state) {}
 	virtual void OnRender() {}
 	virtual void OnImGuiRender() {}
 };

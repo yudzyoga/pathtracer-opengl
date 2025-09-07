@@ -8,7 +8,7 @@ namespace test {
 TestClearColor::TestClearColor() : m_ClearColor{0.2f, 0.3f, 0.8f, 1.0f} {}
 TestClearColor::~TestClearColor() {}
 
-void TestClearColor::OnUpdate(float deltaTime) {}
+void TestClearColor::OnUpdate(float deltaTime, unsigned int state) {}
 
 void TestClearColor::OnRender() {
 	GLCall(glClearColor(m_ClearColor[0], m_ClearColor[1], m_ClearColor[2],

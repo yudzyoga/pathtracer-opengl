@@ -13,6 +13,7 @@
 #include "shader.h"
 #include "tests/test.h"
 #include "tests/test_pathtracer.h"
+#include "tests/test_sphere.h"
 #include "tests/test_texture_2d.h"
 #include "texture.h"
 #include "vertex_array.h"
@@ -107,6 +108,7 @@ int main() {
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture2D>("Texture 2D");
+		testMenu->RegisterTest<test::TestSphere>("Sphere Intersection");
 		testMenu->RegisterTest<test::TestPathTracer>("Path Tracer");
 
 		while (!glfwWindowShouldClose(window)) {
@@ -119,7 +121,7 @@ int main() {
 			ImGui::NewFrame();
 
 			if (currentTest) {
-				currentTest->OnUpdate(0.0f);
+				currentTest->OnUpdate(0.f, 0);
 				currentTest->OnRender();
 				ImGui::Begin("Test");
 				if (currentTest != testMenu && ImGui::Button("<-")) {

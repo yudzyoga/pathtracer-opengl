@@ -9,7 +9,7 @@ class TestClearColor : public Test {
 	TestClearColor();
 	~TestClearColor();
 
-	void OnUpdate(float deltaTime) override;
+	void OnUpdate(float deltaTime, unsigned int state) override;
 	void OnRender() override;
 	void OnImGuiRender() override;
 

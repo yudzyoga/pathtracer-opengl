@@ -51,7 +51,7 @@ TestTexture2D::TestTexture2D()
 }
 TestTexture2D::~TestTexture2D() {}
 
-void TestTexture2D::OnUpdate(float deltaTime) {}
+void TestTexture2D::OnUpdate(float deltaTime, unsigned int state) {}
 
 void TestTexture2D::OnRender() {
 	GLCall(glClearColor(0.f, 0.f, 0.f, 1.0f));

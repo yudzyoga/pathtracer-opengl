@@ -17,7 +17,7 @@ class TestTexture2D : public Test {
 	TestTexture2D();
 	~TestTexture2D();
 
-	void OnUpdate(float deltaTime) override;
+	void OnUpdate(float deltaTime, unsigned int state) override;
 	void OnRender() override;
 	void OnImGuiRender() override;
 
